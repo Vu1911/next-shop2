@@ -1,0 +1,52 @@
+.generalForm {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    border: rgba(218, 217, 217, 0.459) 1px solid;
+    padding: 3% 3%;
+}
+
+.generalFormControl {
+    width: 100%;
+    margin: auto;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.generalLabel {
+    font-size: small;
+    align-self: flex-start;
+}
+
+.generalInput {
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    border: 1px gray solid;
+    padding: 1% 3%;
+}
+
+.generalInput:hover {
+    border: 2px blue solid;
+}
+
+.generalInput:focus {
+    border: 1px blue solid;
+}
+
+.generalInputError {
+    border-color: red !important;
+}
+
+.generalError {
+    align-self: flex-end;
+    color: red;
+    font-size: smaller;
+}
