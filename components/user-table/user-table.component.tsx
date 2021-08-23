@@ -7,48 +7,14 @@ import Icon, {
   SearchOutlined,
 } from "@ant-design/icons";
 import { AccountStatus, Role } from "../../interfaces/account.interface";
+import useSWR from "swr";
+import { getAllUsers } from "../../services/account.service";
+import { useFetch } from "../../hooks/useAccountApi.hook";
+import { useEffect, useState } from "react";
 
 
-const data = [
-  {
-    id: 0,
-    username: "vunl",
-    email: "vunl@example.com",
-    password: "123456789",
-    dob: new Date("19-11-2000"),
-    status: "Activated",
-    role: "Admin",
-  },
-  {
-    id: 1,
-    username: "hant",
-    email: "hant@example.com",
-    password: "123456789",
-    dob: new Date("19-11-2000"),
-    status: "Activated",
-    role: "User",
-  },
-  {
-    id: 2,
-    username: "hoad",
-    email: "hoad@example.com",
-    password: "123456789",
-    dob: new Date("19-11-2000"),
-    status: "Deactivated",
-    role: "Admin",
-  },
-  {
-    id: 3,
-    username: "ame",
-    email: "ame@example.com",
-    password: "123456789",
-    dob: new Date("19-11-2000"),
-    status: "Deactivated",
-    role: "User",
-  },
-];
+export default function UserTable(props: any) {
 
-export default function UserTable() {
   function handleChange(pagination: any, filters: any, sorter: any) {
   }
 
@@ -174,8 +140,8 @@ export default function UserTable() {
 
   return (
     <Table
-      columns={columns}
-      dataSource={data}
+      columns={[...columns]}
+      dataSource={[...props.accounts]}
       onChange={handleChange}
       pagination={{
         defaultPageSize: 2,

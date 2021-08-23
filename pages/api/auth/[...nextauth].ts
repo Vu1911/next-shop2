@@ -23,6 +23,11 @@ export default NextAuth({
                 if (!user){
                     throw new Error('No user found!')
                 }
+
+                if(user.role != credentials.role){
+                    throw new Error('Account role is not permitted!')
+                }
+
                 
                 const isValid = await verifyPassword(credentials.password, user.password)
                 

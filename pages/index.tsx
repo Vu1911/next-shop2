@@ -8,30 +8,18 @@ import SignInForm from "../components/signin-form/signin-form.component";
 import UserForm from "../components/user-form/user-form.component";
 import styles from "../styles/Home.module.css";
 import { signOut } from 'next-auth/client'
+import { Role } from "../interfaces/account.interface";
+import { useSessionForSignIn } from "../hooks/useSessionCustom.hook";
 
 const Home: NextPage = () => {
-  const [session, loading] = useSession();
-
-  console.log(session)
-
-  function handleLogOut(e: any){
-    e.preventDefault()
-    signOut()
+  const [isLoading, setIsLoading] = useSessionForSignIn(true, Role.USER)
+  
+  if(isLoading){
+    return <> Is Loading ... </>
   }
 
   return (
-    <>
-      {!session && !loading &&
-        <SignInForm />
-      }
-      {session && 
-        <Button type="primary" onClick={handleLogOut}>Log out</Button>
-      }
-      {session && session.user?.name === "Admin" &&
-        <UserForm/>
-      }
-
-    </>
+        <SignInForm role={Role.USER}/>
   );
 };
 

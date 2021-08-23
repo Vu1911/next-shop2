@@ -3,8 +3,12 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import SignInFormStyle from "./signin-form.module.css"
 import { signIn } from 'next-auth/client'
+import { useRouter } from "next/dist/client/router";
+import { Role } from "../../interfaces/account.interface";
 
 export default function SignInForm(props: any) {
+  const router = useRouter()
+  
   const {
     register,
     handleSubmit,
@@ -12,13 +16,21 @@ export default function SignInForm(props: any) {
   } = useForm({
     mode: "onBlur",
   });
+
   const onSubmit = async (data: any) => {
     const result = await signIn('credentials', {
       redirect: false,
       username: data.username,
-      password: data.password
+      password: data.password,
+      role: props.role
     })
+    
     console.log(result)
+
+    if(!result?.error) {
+        router.replace("homepage")
+    }
+
   };
 
   return (

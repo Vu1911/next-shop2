@@ -20,6 +20,7 @@ export function validate(
                 
                 req.body = await newSchema.validate(req.body, {stripUnknown: true});
             } catch (error) {
+                console.log(error.message)
                 return res.status(400).json(error)
             }
 

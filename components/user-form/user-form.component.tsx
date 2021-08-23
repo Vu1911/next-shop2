@@ -16,8 +16,15 @@ export default function UserForm(props: any) {
   const onSubmit = async (data: IAccount) => {
     
     data.dob = new Date(data.dob)
-    console.log(data)
+    
     const message = await createUser(data)
+
+    console.log(message)
+
+    if(!message.error){
+      props.onCreate(message)
+    }
+    
     
   };
 
@@ -26,7 +33,7 @@ export default function UserForm(props: any) {
       onSubmit={handleSubmit(onSubmit)}
       className={UserFormStyle.generalForm}
     >
-      <h2>{props.title ? props.title : "Create"} User</h2>
+      <h2>{props.title ? props.title : "Creating"} User</h2>
 
       <div className={UserFormStyle.generalFormControl}>
         <label className={UserFormStyle.generalLabel}>Username</label>
