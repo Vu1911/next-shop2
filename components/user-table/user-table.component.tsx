@@ -1,22 +1,35 @@
-import { Table, Input, Button} from "antd";
+import { Table, Input, Button } from "antd";
 
-import Icon, {
+import {
   DeleteOutlined,
   EditOutlined,
-  EyeOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { AccountStatus, Role } from "../../interfaces/account.interface";
-import useSWR from "swr";
-import { getAllUsers } from "../../services/account.service";
-import { useFetch } from "../../hooks/useAccountApi.hook";
+import { deleteUser } from "../../services/account.service";
 import { useEffect, useState } from "react";
 
-
 export default function UserTable(props: any) {
+  
+  const [data, setData] = useState(props.accounts)
 
-  function handleChange(pagination: any, filters: any, sorter: any) {
+  useEffect(() => {
+    setData([...props.accounts])
+    return () => {
+    
+    }
+  }, [props.accounts])
+
+  async function handleDelete(this: any) {
+    const result = await deleteUser(this.username);
+    console.log(result);
+
+    if (result.status == 200) {
+      props.onDelete(this)
+    }
   }
+
+  function handleChange(pagination: any, filters: any, sorter: any) {}
 
   const handleSearch = (
     selectedKeys: any,
@@ -101,25 +114,30 @@ export default function UserTable(props: any) {
       key: "email",
       width: "30%",
       ...getColumnSearchProps("email"),
-      
     },
     {
-        title: "Role",
-        dataIndex: "role",
-        key: "role",
-        filters: [
-          { text: `${Role.USER}`, value: `${Role.USER}` },
-          { text: `${Role.ADMIN}`, value: `${Role.ADMIN}` },
-        ],
-        onFilter: (value: string, record: any) => record.role.includes(value),
-      },
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+      filters: [
+        { text: `${Role.USER}`, value: `${Role.USER}` },
+        { text: `${Role.ADMIN}`, value: `${Role.ADMIN}` },
+      ],
+      onFilter: (value: string, record: any) => record.role.includes(value),
+    },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
       filters: [
-        { text: `${AccountStatus.ACTIVATED}`, value: `${AccountStatus.ACTIVATED}` },
-        { text: `${AccountStatus.DEACTIVATED}`, value: `${AccountStatus.DEACTIVATED}` },
+        {
+          text: `${AccountStatus.ACTIVATED}`,
+          value: `${AccountStatus.ACTIVATED}`,
+        },
+        {
+          text: `${AccountStatus.DEACTIVATED}`,
+          value: `${AccountStatus.DEACTIVATED}`,
+        },
       ],
       onFilter: (value: string, record: any) => record.status.includes(value),
     },
@@ -130,8 +148,15 @@ export default function UserTable(props: any) {
       render: function displayBtn(text: any, record: any) {
         return (
           <>
-            <Button icon={<EditOutlined />} />
-            <Button danger icon={<DeleteOutlined />} />
+            <Button
+              icon={<EditOutlined />}
+              onClick={props.onEdit.bind(record)}
+            />
+            <Button
+              danger
+              icon={<DeleteOutlined />}
+              onClick={handleDelete.bind(record)}
+            />
           </>
         );
       },
@@ -140,8 +165,8 @@ export default function UserTable(props: any) {
 
   return (
     <Table
-      columns={[...columns]}
-      dataSource={[...props.accounts]}
+      columns={columns}
+      dataSource={data}
       onChange={handleChange}
       pagination={{
         defaultPageSize: 2,

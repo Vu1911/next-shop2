@@ -1,18 +1,21 @@
 .generalForm {
     width: 100%;
     max-width: 500px;
-    margin: auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     border: rgba(218, 217, 217, 0.459) 1px solid;
     padding: 3% 3%;
+    background-color: rgb(255, 255, 255);
+    height: 100% !important;
+    overflow-y: auto !important;
+
 }
 
 .generalFormControl {
     width: 100%;
-    margin: auto;
+    margin: 2% 0%;
     min-height: 100px;
     display: flex;
     flex-direction: column;
@@ -26,19 +29,31 @@
 }
 
 .generalInput {
-    width: 100%;
-    height: 40px;
-    border-radius: 5px;
-    border: 1px gray solid;
-    padding: 1% 3%;
+    width: 100% !important; 
+    height: 40px !important; 
+    border-radius: 5px !important;
+    border: 1px gray solid !important;
+    padding: 1% 3% !important;
 }
 
 .generalInput:hover {
-    border: 2px blue solid;
+    border: 2px blue solid !important;
+}
+
+.generalInput:hover * {
+    border: none;
+}
+
+.generalInput * {
+    border: none !important;
 }
 
 .generalInput:focus {
-    border: 1px blue solid;
+    border: 1px blue solid !important;
+}
+
+.generalInput:focus *:focus {
+    border: none !important;
 }
 
 .generalInputError {

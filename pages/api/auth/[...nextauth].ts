@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
-import { IAccount } from "../../../interfaces/account.interface";
+import { AccountStatus, IAccount } from "../../../interfaces/account.interface";
 import { verifyPassword } from "../../../middleware/bcrypt.mid";
 import { dbConnect } from "../../../middleware/connectDB.mid";
 import User from "../../../models/account.model";
@@ -26,6 +26,10 @@ export default NextAuth({
 
                 if(user.role != credentials.role){
                     throw new Error('Account role is not permitted!')
+                }
+
+                if(user.status != AccountStatus.ACTIVATED){
+                    throw new Error('Account is not activated!')
                 }
 
                 

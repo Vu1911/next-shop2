@@ -7,66 +7,32 @@ import Icon, {
   SearchOutlined,
 } from "@ant-design/icons";
 import { ProductStatus } from "../../interfaces/product.interface";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { deleteProduct } from "../../services/product.service";
 
-
-const data = [
-  {
-    key: 0,
-    imgUrl: "imageLink",
-    title: "product 0",
-    quantity: 1,
-    price: 1000000,
-    description: "bla",
-    status: ProductStatus.OPEN,
-    viewNumber: 0,
-    buyNumber: 0,
-  },
-  {
-    key: 1,
-    imgUrl: "imageLink",
-    title: "product 1",
-    quantity: 1,
-    price: 2000000,
-    description: "bla",
-    status: ProductStatus.OPEN,
-    viewNumber: 0,
-    buyNumber: 0,
-  },
-  {
-    key: 2,
-    imgUrl: "imageLink",
-    title: "product 2",
-    quantity: 1,
-    price: 3000000,
-    description: "bla",
-    status: ProductStatus.CLOSE,
-    viewNumber: 0,
-    buyNumber: 0,
-  },
-  {
-    key: 3,
-    imgUrl: "imageLink",
-    title: "product 3",
-    quantity: 1,
-    price: 4000000,
-    description: "bla",
-    status: ProductStatus.CLOSE,
-    viewNumber: 0,
-    buyNumber: 0,
-  },
-];
 
 export default function ProductTable(props: any) {
-  const [searchState, setSearchState] = useState({
-    searchText: "",
-    searchedColumn: "",
-  });
 
-  const [filterState, setFilterState] = useState({ status: null });
+  const [data, setData] = useState(props.accounts)
+
+  useEffect(() => {
+    setData([...props.products])
+    return () => {
+    
+    }
+  }, [props.products])
+
+  async function handleDelete(this: any) {
+    
+    const result = await deleteProduct(this._id);
+    console.log(result);
+
+    if (result.status == 200) {
+      props.onDelete(this)
+    }
+  }
 
   function handleChange(pagination: any, filters: any, sorter: any) {
-    setFilterState(filters);
   }
 
   const handleSearch = (
@@ -75,18 +41,10 @@ export default function ProductTable(props: any) {
     dataIndex: any
   ) => {
     confirmation();
-    setSearchState({
-      searchText: selectedKeys[0],
-      searchedColumn: dataIndex,
-    });
   };
 
   const handleReset = (clearFilters: any) => {
     clearFilters();
-    setSearchState({
-      searchText: "",
-      searchedColumn: "",
-    });
   };
 
   function getColumnSearchProps(dataIndex: string): any {
@@ -189,8 +147,8 @@ export default function ProductTable(props: any) {
         return (
           <>
             <Button icon={<EyeOutlined />} />
-            <Button icon={<EditOutlined />} />
-            <Button danger icon={<DeleteOutlined />} />
+            <Button icon={<EditOutlined />} onClick={props.onEdit.bind(record)}/>
+            <Button danger icon={<DeleteOutlined />}  onClick={handleDelete.bind(record)}/>
           </>
         );
       },

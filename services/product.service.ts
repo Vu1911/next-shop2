@@ -1,16 +1,17 @@
 import axios from "axios";
 import { IAccount } from "../interfaces/account.interface";
+import { IProduct } from "../interfaces/product.interface";
 
-export async function createUser(account: IAccount) {
+export async function createProduct(product: IProduct) {
     try {
-        const response = await axios.post('/api/auth/account', account)
+        const response = await axios.post('/api/product', product)
         return response.data
     } catch (error) {
         return {error: `Fail to create user! ${error.message}`}
     }
 } 
 
-export const getAllUsers = async (url: string) => {
+export const getAllProducts = async (url: string = "/api/product") => {
         const res = await axios.get(url)
         if (res.status != 200) {
             const error = new Error('An error occurred while fetching the data.')
@@ -22,40 +23,31 @@ export const getAllUsers = async (url: string) => {
        return await res.data
 }
 
-export async function checkUsernameUnique(data: any) {
+export async function getProduct(id: any) {
     try {
-        console.log(data)
+        console.log(id)
 
-        const username = data.value
-        
-        if (data.type == "Edit") {
-            return true
-        }
-
-        const response = await axios.get(`/api/auth/account?username=${username}`)
+        const response = await axios.get(`/api/product?id=${id}`)
         console.log(response.data)
-        if(response.data.length != 0) {
-            return false
-        } else {
-            return true
-        }
+        
+        return response.data
     } catch (error) {
         return false
     }
 }
 
-export async function editUser(user: any){
+export async function editProduct(product: any){
     try {
-        console.log(user)
-        const response = await axios.put('/api/auth/account', user)
+        console.log(product)
+        const response = await axios.put('/api/product', product)
         return response.data
     } catch (error) {
-        return {error: `Fail to create user! ${error.message}`}
+        return {error: `Fail to edit product! ${error.message}`}
     }
 }
 
-export async function deleteUser(username: string) {
-    const res = await axios.delete(`/api/auth/account?username=${username}`)
+export async function deleteProduct(id: any) {
+    const res = await axios.delete(`/api/product?id=${id}`)
         if (res.status != 200) {
             const error = new Error('An error occurred while fetching the data.')
             error.message = await res.data

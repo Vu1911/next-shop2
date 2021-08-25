@@ -6,8 +6,7 @@ export interface IProduct {
     price: number,
     description: string,
     status: string,
-    viewNumber: number,
-    buyNumber: number
+    transaction: Array<{buy: Number, sell: Number}>
 }
 
 export enum ProductStatus {
