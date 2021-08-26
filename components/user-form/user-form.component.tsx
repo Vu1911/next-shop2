@@ -59,7 +59,7 @@ export default function UserForm(props: any) {
             maxLength: 30,
             validate: {
               unique: async (value: string) =>
-                await checkUsernameUnique({ value: value, type: props.title }),
+                await checkUsernameUnique({ value: value, type: props.title, oldValue: props.data.username }),
             },
           })}
         />

@@ -1,0 +1,54 @@
+.productCard {
+    display: flex;
+    justify-content: space-evenly;
+    width: 60%;
+    margin: auto;
+}
+
+.productImg{
+    width: 50%;
+    display: block;
+}
+
+.productInfo{
+    width: 40%;
+    display: block;
+}
+
+.productInfo * {
+    margin-bottom: 5px;
+}
+
+.productInfo h1 {
+    font-size: 30px;
+}
+
+.productInfo .productTitle{
+    width: 100%;
+}
+
+.productBuyBtn {
+    width: 100%;
+    padding: 0px 10px;
+    max-height: 40px;
+}
+
+.productDescription {
+    width: 70%;
+    margin: auto;
+    height: 200px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: solid rgba(204, 203, 203, 0.377) 1px;
+    padding: 1% 2%;
+    overflow-y: auto;
+}
+
+.colorChoosing button {
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    margin: 0px 5px;
+}

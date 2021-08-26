@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { Model } from "mongoose";
 import { IAccount } from "../interfaces/account.interface";
-import { IProduct } from "../interfaces/product.interface";
+import { IProduct, TransType } from "../interfaces/product.interface";
 
 let Schema = mongoose.Schema;
 
@@ -36,7 +36,19 @@ let productSchema = new Schema({
     },
   },
   transaction: {
-     type: [{buy: Number, sell: Number}]
+     type: [
+       {transType: {
+         type: String, 
+         enum: {
+           values: [TransType.BUY, TransType.SELL], 
+           message: "{VALUE} is not support!"
+          }
+        }, 
+        volume: Number,
+        quantity: Number,
+        time: Date
+      }
+    ]
   }
 });
 

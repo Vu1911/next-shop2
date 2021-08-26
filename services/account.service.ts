@@ -29,7 +29,9 @@ export async function checkUsernameUnique(data: any) {
         const username = data.value
         
         if (data.type == "Edit") {
-            return true
+            if(username == data.oldValue){
+                return true
+            }
         }
 
         const response = await axios.get(`/api/auth/account?username=${username}`)

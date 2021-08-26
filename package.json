@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
+    "@syncfusion/ej2-react-charts": "^19.2.57",
     "@types/mongoose": "^5.11.97",
     "antd": "^4.16.11",
     "axios": "^0.21.1",

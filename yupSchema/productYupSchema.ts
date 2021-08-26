@@ -1,5 +1,5 @@
 import { object, string, date, number, array } from "yup";
-import { ProductStatus } from "../interfaces/product.interface";
+import { ProductStatus, TransType } from "../interfaces/product.interface";
 
 
 export const productYupSchema = object({
@@ -10,7 +10,9 @@ export const productYupSchema = object({
     description: string().required(),
     status: string().oneOf([ProductStatus.OPEN, ProductStatus.CLOSE]),
     transaction: array().of(object().shape({
-        buy: number(),
-        sell: number()
+        transType: string().oneOf([TransType.BUY, TransType.SELL]),
+        volume: number(),
+        quantity: number(),
+        time: date()
     }))
 })

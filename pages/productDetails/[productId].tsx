@@ -1,19 +1,18 @@
 import { useRouter } from "next/dist/client/router";
 import { useEffect, useState } from "react";
 import { getProduct } from "../../services/product.service";
-import { Layout, Menu, Breadcrumb, Button, PageHeader } from "antd";
+import { Layout, Menu, PageHeader } from "antd";
 import {
   DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
-  UserOutlined,
   HomeOutlined,
   LogoutOutlined,
 } from "@ant-design/icons";
 import globalStyle from "../../styles/global.module.css";
 import { signOut } from "next-auth/client";
-import Image from "next/image";
+import ProductCard from "../../components/product-card/product-card.component";
+import TransactionForm from "../../components/transaction-form/transaction-form.component";
+import { IProduct } from "../../interfaces/product.interface";
+import ProductChart from "../../components/chart/product-chart.component";
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
@@ -23,16 +22,30 @@ export default function ProductDetails() {
 
   const { productId } = router.query;
 
-  const [currentProduct, setCurrentProduct] = useState({imgUrl: ""});
+  const [currentProduct, setCurrentProduct] = useState({
+    _id: 0,
+    imgUrl: "",
+    title: "",
+    quantity: 0,
+    price: 0,
+    description: "",
+    status: "",
+    transaction: new Array<any>()
+  });
 
   const [collapsed, setCollapsed] = useState(true);
+
+  const [closeTransForm, setCloseTransForm] = useState(true)
 
   useEffect(() => {
     let mount = true;
 
     getProduct(productId).then((product: any) => {
+      console.log(product)
       if(product){
         setCurrentProduct(product);
+      } else {
+        setCurrentProduct((oldProduct: any) => { oldProduct._id = -1; return JSON.parse(JSON.stringify(oldProduct))})
       }
 
       
@@ -43,16 +56,29 @@ export default function ProductDetails() {
     };
   }, [productId]);
 
+  function handleOpenTransaction() {
+    setCloseTransForm(false)
+  }
+
+  function handleCloseTransaction() {
+    setCloseTransForm(true)
+  }
+
+  function handleFinishTransaction(product: IProduct) {
+    setCurrentProduct(product)
+    setCloseTransForm(true)
+  }
+
   const onCollapse = (collapse: boolean) => {
     setCollapsed((oldState: any) => !oldState);
   };
 
   const navToHome = () => {
-    router.replace("homepage");
+    router.replace("../homepage");
   };
 
   const navToDashboard = () => {
-    router.replace("product-dashboard");
+    router.replace("../product-dashboard");
   };
 
   const logout = async () => {
@@ -80,15 +106,32 @@ export default function ProductDetails() {
         </Menu>
       </Sider>
       <Layout className="site-layout">
-        <PageHeader className="site-page-header" title="Product Dashboard" />
+        <PageHeader className="site-page-header" title="Product Details" />
         <Content style={{ margin: "0 16px" }}>
-            {
-                (currentProduct != {imgUrl: ""}) && 
-                <img src={currentProduct.imgUrl} alt="product image"/>
-
+            {(currentProduct._id == 0) && 
+                <h1>Loading...</h1>
+            }
+            {(currentProduct._id == -1) &&
+                <h1>No such product!</h1>
+            }
+            {(currentProduct._id != 0 && currentProduct._id != -1) &&
+              <ProductCard product={currentProduct} onCreateTransaction={handleOpenTransaction}/>
+            }
+            {!closeTransForm && (
+                <div className={globalStyle.formContainer}>
+                  <TransactionForm
+                    title="Edit"
+                    product={currentProduct}
+                    onFinish={handleFinishTransaction}
+                    onCancel={handleCloseTransaction}
+                  />
+                </div>
+            )}
+            {currentProduct.transaction.length > 0 && 
+              <ProductChart transaction={currentProduct.transaction}/>
             }
         
-
+        
         </Content>
         <Footer style={{ textAlign: "center" }}>@NextShop.me</Footer>
       </Layout>

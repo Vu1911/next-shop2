@@ -1,6 +1,6 @@
 import axios from "axios";
 import { IAccount } from "../interfaces/account.interface";
-import { IProduct } from "../interfaces/product.interface";
+import { IProduct, TransType } from "../interfaces/product.interface";
 
 export async function createProduct(product: IProduct) {
     try {
@@ -54,5 +54,58 @@ export async function deleteProduct(id: any) {
             throw error
         }
         return res
+}
+
+export async function addTransaction(trans: any, product: any){
+    let transaction = {transType: trans.transType, volume: 0, time: trans.time, quantity: 0}
+    transaction.volume = (transaction.transType == TransType.BUY)? parseInt(trans.volume) : -parseInt(trans.volume)
+    
+    const updatedTransaction = JSON.parse(JSON.stringify(product))
+    // console.log(transaction)
+    // console.log(product)
+    // console.log(updatedTransaction)
+    // console.log(product === updatedTransaction)
+
+    if(product.transaction.length == 0 || product.transaction[product.transaction.length-1].time < transaction.time){
+        transaction["quantity"] = product.quantity + transaction.volume
+
+
+
+        if(transaction["quantity"] < 0){
+            return {error: "transaction negative!"}
+        }
+
+        updatedTransaction.transaction.push({...transaction})
+        updatedTransaction.quantity = transaction.quantity
+        
+    } else {
+        let insertIndex = -1
+        for(let i = 0; i < product.transaction.length; i ++){
+            if (insertIndex == -1 && product.transaction[i].time > transaction.time){
+                insertIndex = i
+                transaction["quantity"] = (insertIndex != 0) ? product.transaction[i-1].quantity + transaction.volume : transaction.volume + product.transaction[i].quantity - product.transaction[i].volume
+                
+                if(transaction["quantity"] < 0){
+                    return {error: "transaction negative!"}
+                }
+
+                updatedTransaction.transaction[i].quantity += transaction.volume
+            } else if (insertIndex != -1){
+                updatedTransaction.transaction[i].quantity += transaction.volume
+            }
+            if (updatedTransaction.transaction[i].quantity < 0){
+                return {error: "transaction negative!"}
+            }
+        }
+
+        console.log(insertIndex)
+        console.log(updatedTransaction.transaction)
+
+        updatedTransaction.transaction.splice(insertIndex, 0, {...transaction})
+        
+        updatedTransaction.quantity = updatedTransaction.transaction[updatedTransaction.transaction.length-1].quantity
+    }
+
+    return await editProduct(updatedTransaction)
 }
 
