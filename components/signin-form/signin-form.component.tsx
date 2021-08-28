@@ -1,14 +1,16 @@
-import { Button } from "antd";
-import React from "react";
+import { Alert, Button } from "antd";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import SignInFormStyle from "./signin-form.module.css"
-import { signIn } from 'next-auth/client'
+import SignInFormStyle from "./signin-form.module.css";
+import { signIn } from "next-auth/client";
 import { useRouter } from "next/dist/client/router";
 import { Role } from "../../interfaces/account.interface";
 
 export default function SignInForm(props: any) {
-  const router = useRouter()
-  
+  const router = useRouter();
+
+  const [error, setError] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -18,19 +20,20 @@ export default function SignInForm(props: any) {
   });
 
   const onSubmit = async (data: any) => {
-    const result = await signIn('credentials', {
+    const result = await signIn("credentials", {
       redirect: false,
       username: data.username,
       password: data.password,
-      role: props.role
-    })
-    
-    console.log(result)
+      role: props.role,
+    });
 
-    if(!result?.error) {
-        router.replace("homepage")
+    console.log(result);
+
+    if (!result?.error) {
+      router.replace("homepage");
+    } else {
+      setError(result.error)
     }
-
   };
 
   return (
@@ -40,6 +43,14 @@ export default function SignInForm(props: any) {
     >
       <h2>Sign In</h2>
 
+      {error != "" && (
+        <Alert
+          message={error}
+          type="error"
+          closable
+        />
+      )}
+
       <div className={SignInFormStyle.generalFormControl}>
         <label className={SignInFormStyle.generalLabel}>Username</label>
         <input
@@ -48,7 +59,7 @@ export default function SignInForm(props: any) {
           }`}
           type="text"
           placeholder="Username"
-          {...register("username", { required: true})}
+          {...register("username", { required: true })}
         />
         {errors.username?.type === "required" && (
           <span className={SignInFormStyle.generalError}>

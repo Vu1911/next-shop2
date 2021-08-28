@@ -9,14 +9,25 @@ import Icon, {
 import { ProductStatus } from "../../interfaces/product.interface";
 import { useEffect, useState } from "react";
 import { deleteProduct } from "../../services/product.service";
+import { useRouter } from "next/dist/client/router";
 
 
 export default function ProductTable(props: any) {
 
+  const router = useRouter()
+
   const [data, setData] = useState(props.accounts)
 
   useEffect(() => {
-    setData([...props.products])
+    const clone  = JSON.parse(JSON.stringify(props.products))
+    clone.forEach((element: any) => {
+      if(typeof (element.price) == 'number')
+      element.price = new Intl.NumberFormat('vn-VN', {
+        style: 'currency',
+        currency: 'VND',
+      }).format(element.price);
+    })
+    setData(clone)
     return () => {
     
     }
@@ -30,6 +41,10 @@ export default function ProductTable(props: any) {
     if (result.status == 200) {
       props.onDelete(this)
     }
+  }
+
+  function handleView (this: any) {
+    router.replace(`/productDetails/${this._id}`)
   }
 
   function handleChange(pagination: any, filters: any, sorter: any) {
@@ -146,7 +161,7 @@ export default function ProductTable(props: any) {
       render: function displayBtn(text: any, record: any) {
         return (
           <>
-            <Button icon={<EyeOutlined />} />
+            <Button icon={<EyeOutlined />} onClick={handleView.bind(record)}/>
             <Button icon={<EditOutlined />} onClick={props.onEdit.bind(record)}/>
             <Button danger icon={<DeleteOutlined />}  onClick={handleDelete.bind(record)}/>
           </>

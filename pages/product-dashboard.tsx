@@ -75,8 +75,9 @@ export default function ProductDashboard() {
   }
 
   function handleOpenEditForm (this: any) {
-    console.log(this)
-    setCloseEditForm({data: this, isClose: false});
+    const actualData = data.filter((e: any) => e._id == this._id)[0]
+    console.log(actualData)
+    setCloseEditForm({data: actualData, isClose: false});
   };
 
   const handleCloseEdit = () => {
